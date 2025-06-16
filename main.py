@@ -15,8 +15,8 @@ LabelBase.register(
     "Roboto",
     'assets/fonts/Poppins-Regular.ttf',
     'assets/fonts/Poppins-Italic.ttf',
-    'assets/fonts/Poppins-Bold.ttf',
-    'assets/fonts/Poppins-BoldItalic.ttf'
+    'assets/fonts/Poppins-SemiBold.ttf',
+    'assets/fonts/Poppins-SemiBoldItalic.ttf'
 )
 Loader.error_image = "assets/images/transparent.png"
 Loader.loading_image = "assets/images/transparent.png"
@@ -82,30 +82,6 @@ class MusicPlayerApp(App):
             )
         self.sm.current = "player screen"
         return box
-
-    def on_start(self):
-        pass
-        # win_md_bnb.create_bnb(
-        #     tabs=[
-        #         {
-        #             "icon": "music-circle",
-        #             "icon_variant": "music-circle-outline",
-        #             "text": "Music",
-        #             "name": "home screen",
-        #             "active": True,
-        #             "on_release": lambda _: setattr(self.sm, "current", "home screen"),
-        #         },
-        #         {
-        #             "icon": "heart",
-        #             "icon_variant": "heart-outline",
-        #             "text": "Favorites",
-        #             "name": "favorite screen",
-        #             "on_release": lambda _: setattr(self.sm, "current", "favorite screen"),
-        #         }
-        #     ],
-        #     use_text=False
-        # )
-        # win_md_bnb.push()
 
 
 if __name__ == '__main__':
