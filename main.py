@@ -76,8 +76,8 @@ class MusicPlayerApp(App):
             self.sm.bind(
                 current=lambda _, name: (
                     setattr(box, "padding", [0, self.statusbar_height, 0, self.navbar_height])
-                    # if name != "home screen" else
-                    # setattr(box, "padding", [0, 0, 0, self.navbar_height])
+                    if name != "player screen" else
+                    setattr(box, "padding", [0, 0, 0, 0])
                 )
             )
         self.sm.current = "player screen"
