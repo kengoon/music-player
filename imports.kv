@@ -1,0 +1,57 @@
+#:import datetime datetime.datetime
+#:import LowerScrollEffect components.effects.LowerScrollEffect
+#:import StretchOverScrollStencil components.effects.StretchOverScrollStencil
+#:import gcfh kivy.utils.get_color_from_hex
+#:import Window kivy.core.window.Window
+#:set icon_path "assets/fonts/materialdesignicons-webfont.ttf"
+
+<TouchRippleBehavior>:
+    ripple_color: .7, .7, .7, .5
+
+<CustomBoxLayout@BoxLayout+AdaptiveBehavior>
+
+<StencilBoxLayout@CustomBoxLayout+StencilBehavior>
+
+<ButtonBoxLayout@TouchRippleButtonBehavior+BoxLayout+AdaptiveBehavior+StencilBehavior>
+
+<TagTextInput@CustomBoxLayout>:
+    adaptive_height: True
+    orientation: "vertical"
+    spacing: "5dp"
+    tag: ""
+    hint_text: ""
+    text: ""
+    password: False
+    bold: False
+    input_type: "null"
+    input_filter: None
+    focus: False
+    font_size: "15sp"
+    CustomLabel:
+        text: root.tag
+        adaptive_height: True
+        markup: True
+        font_size: "13sp"
+        bold: True
+    CustomTextInput:
+        id: txt_input
+        padding: "15dp", "18dp"
+        radius: "10dp"
+        password: root.password
+        text: root.text
+        focus: root.focus
+        font_size: root.font_size
+        hint_text: root.hint_text
+        input_type: root.input_type
+        input_filter: root.input_filter
+        on_text: root.text = self.text
+        on_focus: root.focus = self.focus
+
+<Selector>
+    color: app.theme_cls.primary_color
+
+#<StencilView>
+#    canvas.before:
+#        Clear
+#    canvas.after:
+#        Clear

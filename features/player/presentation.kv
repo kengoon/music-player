@@ -1,0 +1,89 @@
+<PlayerScreen>
+    name: "player screen"
+    canvas:
+        Color:
+            rgba: app.theme_cls.bg_color_dark
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    StencilBoxLayout:
+        radius: 0, 0, "40dp", "40dp"
+        orientation: "vertical"
+        size_hint_y: None
+        height: root.height - dp(100)
+        y: root.height - self.height
+        canvas:
+            Color:
+                rgba: app.theme_cls.bg_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        CustomBoxLayout:
+            adaptive_height: True
+            padding: "20dp", "20dp", "20dp", 0
+            spacing: "15dp"
+            CustomLabel:
+                text: "Your Playlist"
+                bold: True
+                adaptive_height: True
+                font_size: "32sp"
+                pos_hint: {"center_y": .5}
+        RecycleView:
+            id: rv
+            effect_cls: LowerScrollEffect
+            do_scroll_x: False
+            scroll_distance: 0
+            bar_width: 0
+            RecycleBoxLayout:
+                id: rb
+                root: root
+                orientation: 'vertical'
+                size_hint_y: None
+                size: self.minimum_size
+                default_size_hint: 1, None
+                # magic value for the default height of the message
+                default_size: 0, "82dp"
+                spacing: "20dp"
+                padding: "20dp"
+    BoxLayout:
+        size_hint_y: None
+        height: "100dp"
+        padding: "20dp"
+        spacing: "10dp"
+        CoverImage:
+            size_hint_x: None
+            width: self.height
+            source: "assets/images/phyno.jpg"
+            radius: "15dp"
+        CustomBoxLayout:
+            orientation: "vertical"
+            adaptive_height: True
+            pos_hint: {"center_y": .5}
+            spacing: "5dp"
+            CustomBoxLayout:
+                adaptive_height: True
+                CustomBoxLayout:
+                    adaptive_height: True
+                    spacing: "5dp"
+                    orientation: "vertical"
+                    CustomLabel:
+                        text: "Phyno - The Playmaker"
+                        bold: True
+                        font_size: "16sp"
+                        adaptive_height: True
+                        -color: app.theme_cls.text_color_dark
+                    CustomLabel:
+                        text: "Phyno"
+                        font_size: "14sp"
+                        adaptive_height: True
+                        -color: app.theme_cls.text_color_dark[:3] + [0.7]
+                IconButton:
+                    icon: "play"
+                    bg_color: app.theme_cls.primary_color_dark
+                    size: "35dp", "35dp"
+                    pos_hint: {'center_y': .5}
+            LinearProgressIndicator
+                radius: "1.5dp"
+                value: 50
+                indicator_color: app.theme_cls.primary_color_dark
+
