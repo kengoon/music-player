@@ -2,7 +2,7 @@ __all__ = ("Divider",)
 
 from kivy.clock import Clock
 from kivy.metrics import dp
-from kivy.properties import ColorProperty, NumericProperty
+from kivy.properties import ColorProperty, NumericProperty, VariableListProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from kivy.lang import Builder
@@ -36,6 +36,8 @@ class Divider(BoxLayout):
     :attr:`divider_width` is an :class:`~kivy.properties.NumericProperty`
     and defaults to `dp(1)`.
     """
+
+    radius = VariableListProperty(0)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
