@@ -2,11 +2,12 @@
     name: "player screen"
     canvas:
         Color:
-            rgba: app.theme_cls.bg_color_dark
+            rgba: app.theme_cls.bg_color_dark #gcfh("#2d2d2d")
         Rectangle:
             size: self.size
             pos: self.pos
     StencilBoxLayout:
+        id: play_list_container
         radius: 0, 0, "40dp", "40dp"
         orientation: "vertical"
         size_hint_y: None
@@ -20,7 +21,7 @@
                 size: self.size
         CustomBoxLayout:
             adaptive_height: True
-            padding: "20dp", "20dp", "20dp", 0
+            padding: "20dp", app.statusbar_height + dp(15), "20dp", "20dp"
             spacing: "15dp"
             CustomLabel:
                 text: "Your Playlist"
@@ -28,44 +29,61 @@
                 adaptive_height: True
                 font_size: "32sp"
                 pos_hint: {"center_y": .5}
-        RecycleView:
-            id: rv
-            effect_cls: LowerScrollEffect
-            do_scroll_x: False
-            scroll_distance: 0
-            bar_width: 0
-            RecycleBoxLayout:
-                id: rb
-                root: root
-                orientation: 'vertical'
-                size_hint_y: None
-                size: self.minimum_size
-                default_size_hint: 1, None
-                # magic value for the default height of the message
-                default_size: 0, "82dp"
-                spacing: "20dp"
-                padding: "20dp"
-    BoxLayout:
-        size_hint_y: None
-        height: "100dp"
+        RelativeLayout
+            RecycleView:
+                id: rv
+                effect_cls: LowerScrollEffect
+                do_scroll_x: False
+                viewclass: 'PlayList'
+                data: [{}] * 20
+                scroll_distance: 0
+                bar_width: 0
+                RecycleBoxLayout:
+                    id: rb
+                    root: root
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    size: self.minimum_size
+                    default_size_hint: 1, None
+                    # magic value for the default height of the message
+                    default_size: 0, "60dp"
+                    spacing: "20dp"
+                    padding: "20dp", 0, "20dp", "20dp"
+            RelativeLayout:
+                id: overlay
+                bg_color: 0, 0, 0, 0
+                canvas:
+                    Color:
+                        rgba: self.bg_color
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos#
+    CustomBoxLayout
+        id: player_container
+        orientation: "vertical"
+        adaptive_height: True
         padding: "20dp"
-        spacing: "10dp"
+        spacing: "40dp"
+        y: -self.height + dp(100)
+        opacity: 0
         CoverImage:
-            size_hint_x: None
-            width: self.height
+            size_hint: None, None
+            size: root.width - dp(40), root.width - dp(40)
+            pos_hint: {"center_x": .5}
             source: "assets/images/phyno.jpg"
             radius: "15dp"
         CustomBoxLayout:
             orientation: "vertical"
             adaptive_height: True
             pos_hint: {"center_y": .5}
-            spacing: "5dp"
+            spacing: "10dp"
             CustomBoxLayout:
                 adaptive_height: True
-                CustomBoxLayout:
+                ButtonBoxLayout:
                     adaptive_height: True
                     spacing: "5dp"
                     orientation: "vertical"
+                    on_release: root.push_up()
                     CustomLabel:
                         text: "Phyno - The Playmaker"
                         bold: True
@@ -78,12 +96,112 @@
                         adaptive_height: True
                         -color: app.theme_cls.text_color_dark[:3] + [0.7]
                 IconButton:
-                    icon: "play"
-                    bg_color: app.theme_cls.primary_color_dark
-                    size: "35dp", "35dp"
+                    icon: "plus-circle-outline"
                     pos_hint: {'center_y': .5}
+                    -color: app.theme_cls.primary_color_dark
             LinearProgressIndicator
                 radius: "1.5dp"
                 value: 50
                 indicator_color: app.theme_cls.primary_color_dark
+        CustomBoxLayout:
+            adaptive_size: True
+            orientation: "horizontal"
+            spacing: "50dp"
+            pos_hint: {"center_x": .5}
+            IconButton:
+                icon: "skip-previous"
+                font_size: "35sp"
+                pos_hint: {'center_y': .5}
+                -color: app.theme_cls.primary_color_dark
+            IconButton:
+                icon: "play"
+                bg_color: app.theme_cls.primary_color_dark
+                size: "70dp", "70dp"
+                font_size: "35sp"
+                pos_hint: {'center_y': .5}
+            IconButton:
+                icon: "skip-next"
+                font_size: "35sp"
+                pos_hint: {'center_y': .5}
+                -color: app.theme_cls.primary_color_dark
 
+    BoxLayout:
+        id: player_preview
+        size_hint_y: None
+        height: "100dp"
+        orientation: "vertical"
+        padding: 0, 0, 0, app.navbar_height
+        Divider:
+            divider_width: "2dp"
+            size_hint_x: None
+            width: "20dp"
+            pos_hint: {"center_x": .5}
+        BoxLayout:
+            size_hint_y: None
+            height: "90dp"
+            padding: "20dp"
+            spacing: "10dp"
+            CoverImage:
+                size_hint_x: None
+                width: self.height
+                source: "assets/images/phyno.jpg"
+                radius: "15dp"
+            CustomBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                pos_hint: {"center_y": .5}
+                spacing: "5dp"
+                CustomBoxLayout:
+                    adaptive_height: True
+                    ButtonBoxLayout:
+                        adaptive_height: True
+                        spacing: "5dp"
+                        orientation: "vertical"
+                        on_press: root.push_up()
+                        CustomLabel:
+                            text: "Phyno - The Playmaker"
+                            bold: True
+                            font_size: "16sp"
+                            adaptive_height: True
+                            -color: app.theme_cls.text_color_dark
+                        CustomLabel:
+                            text: "Phyno"
+                            font_size: "14sp"
+                            adaptive_height: True
+                            -color: app.theme_cls.text_color_dark[:3] + [0.7]
+                    IconButton:
+                        icon: "play"
+                        bg_color: app.theme_cls.primary_color_dark
+                        size: "35dp", "35dp"
+                        pos_hint: {'center_y': .5}
+                LinearProgressIndicator
+                    radius: "1.5dp"
+                    value: 50
+                    indicator_color: app.theme_cls.primary_color_dark
+
+<PlayList>
+    spacing: "10dp"
+    radius: "15dp"
+    CoverImage:
+        size_hint_x: None
+        width: self.height
+        source: "assets/images/phyno.jpg"
+        radius: "15dp"
+    CustomBoxLayout:
+        orientation: "vertical"
+        adaptive_height: True
+        pos_hint: {"center_y": .5}
+        spacing: "5dp"
+        CustomLabel:
+            text: "Phyno - The Playmaker"
+            bold: True
+            font_size: "16sp"
+            adaptive_height: True
+        CustomLabel:
+            text: "Phyno"
+            font_size: "14sp"
+            adaptive_height: True
+#    IconButton:
+#        icon: "heart-outline"
+#        bg_color: app.theme_cls.primary_color_dark
+#        pos_hint: {'center_y': .5}
