@@ -136,11 +136,12 @@
             size_hint_x: None
             width: "20dp"
             pos_hint: {"center_x": .5}
-        BoxLayout:
+        ButtonBoxLayout:
             size_hint_y: None
             height: "90dp"
             padding: "20dp"
             spacing: "10dp"
+            on_press: root.push_up()
             CoverImage:
                 size_hint_x: None
                 width: self.height
@@ -153,15 +154,12 @@
                 spacing: "5dp"
                 CustomBoxLayout:
                     adaptive_height: True
-                    ButtonBoxLayout:
+                    CustomBoxLayout:
                         adaptive_height: True
-                        spacing: "5dp"
                         orientation: "vertical"
-                        on_press: root.push_up()
                         CustomLabel:
                             text: "Phyno - The Playmaker"
                             bold: True
-                            font_size: "16sp"
                             adaptive_height: True
                             -color: app.theme_cls.text_color_dark
                         CustomLabel:
@@ -195,7 +193,6 @@
         CustomLabel:
             text: "Phyno - The Playmaker"
             bold: True
-            font_size: "16sp"
             adaptive_height: True
         CustomLabel:
             text: "Phyno"
