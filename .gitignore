@@ -1,2 +1,4 @@
 # Project exclude paths
 /.buildozer/
+/bin/
+/.idea/
