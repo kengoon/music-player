@@ -2,10 +2,10 @@
 
 # The IP address of your phone; You can hot-reload how many phones you want.
 # use "127.0.0.1" if you are using Android emulator.
-PHONE_IPS = ["192.168.1.68"]
+PHONE_IPS = ["10.153.83.233"]
 
 # If true, it's going to send the app to smartphone every time you press Ctrl+S
-HOT_RELOAD_ON_PHONE = false
+HOT_RELOAD_ON_PHONE = true
 
 # You can stream using "USB" or "WIFI"
 # If your USB cable is connected, use "USB", otherwise use "WIFI"
