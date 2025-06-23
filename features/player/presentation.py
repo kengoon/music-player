@@ -162,10 +162,12 @@ class PlayerScreen(BaseScreen):
         if music_index is None:
             if not self.player:
                 return
+            self.player.prepare()
             self.player.play()
         else:
             self.update_progress.cancel()
             self.player.seek_to_media_item_index(music_index)
+            self.player.play()
             self.update_player_ui(self.ids.rv.data[music_index])
 
         self.update_progress()
