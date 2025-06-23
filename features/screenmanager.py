@@ -22,9 +22,6 @@ class AppScreenManager(ScreenManager):
     """
     screen_config = DictProperty(
         {
-            "home screen": {
-                "presentation": ("features.home.presentation", "HomeScreen")
-            },
             "player screen": {
                 "presentation": ("features.player.presentation", "PlayerScreen")
             },
