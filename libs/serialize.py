@@ -83,6 +83,15 @@ def serialize_dict_to_map(dictionary):
         elif isinstance(value, bool):
             Boolean = autoclass("java.lang.Boolean")
             dict_to_map_data.put(key, Boolean(value))
+        elif isinstance(value, int):
+            Long = autoclass("java.lang.Long")
+            dict_to_map_data.put(key, Long(value))
+        elif isinstance(value, float):
+            Double = autoclass("java.lang.Double")
+            dict_to_map_data.put(key, Double(value))
+        elif isinstance(value, str):
+            String = autoclass("java.lang.String")
+            dict_to_map_data.put(key, String(value))
         else:
             dict_to_map_data.put(key, value)
     return dict_to_map_data
