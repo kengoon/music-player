@@ -35,7 +35,6 @@
                 effect_cls: LowerScrollEffect
                 do_scroll_x: False
                 viewclass: 'PlayList'
-                data: [{}] * 20
                 scroll_distance: 0
                 bar_width: 0
                 RecycleBoxLayout:
@@ -57,7 +56,7 @@
                         rgba: self.bg_color
                     Rectangle:
                         size: self.size
-                        pos: self.pos#
+                        pos: self.pos
     CustomBoxLayout
         id: player_container
         orientation: "vertical"
@@ -67,10 +66,11 @@
         y: -self.height + dp(100)
         opacity: 0
         CoverImage:
+            id: container_thumbnail
             size_hint: None, None
             size: root.width - dp(40), root.width - dp(40)
             pos_hint: {"center_x": .5}
-            source: "assets/images/phyno.jpg"
+            source: "assets/images/thumbnail.png"
             radius: "15dp"
         CustomBoxLayout:
             orientation: "vertical"
@@ -85,45 +85,68 @@
                     orientation: "vertical"
                     on_release: root.push_up()
                     CustomLabel:
-                        text: "Phyno - The Playmaker"
+                        id: container_title
+                        text: "Nothing playing"
                         bold: True
                         font_size: "16sp"
+                        shorten: True
+                        shorten_from: "right"
                         adaptive_height: True
                         -color: app.theme_cls.text_color_dark
                     CustomLabel:
-                        text: "Phyno"
+                        id: container_artist
+                        text: "Empty"
                         font_size: "14sp"
                         adaptive_height: True
+                        shorten: True
+                        shorten_from: "right"
                         -color: app.theme_cls.text_color_dark[:3] + [0.7]
                 IconButton:
                     icon: "plus-circle-outline"
                     pos_hint: {'center_y': .5}
                     -color: app.theme_cls.primary_color_dark
             LinearProgressIndicator
+                id: container_progress
                 radius: "1.5dp"
-                value: 50
+                min: 0
+                max: 1
                 indicator_color: app.theme_cls.primary_color_dark
         CustomBoxLayout:
             adaptive_size: True
             orientation: "horizontal"
-            spacing: "50dp"
+            spacing: "20dp"
             pos_hint: {"center_x": .5}
+            IconButton:
+                icon: "shuffle"
+                pos_hint: {"center_y": .5}
+                -color: app.theme_cls.primary_color_dark
+                on_release: root.shuffle()
             IconButton:
                 icon: "skip-previous"
                 font_size: "35sp"
                 pos_hint: {'center_y': .5}
                 -color: app.theme_cls.primary_color_dark
+                on_release: root.previous()
             IconButton:
+                id: container_play_btn
                 icon: "play"
                 bg_color: app.theme_cls.primary_color_dark
                 size: "70dp", "70dp"
                 font_size: "35sp"
                 pos_hint: {'center_y': .5}
+                on_release: root.play() if self.icon == "play" else root.pause()
             IconButton:
                 icon: "skip-next"
                 font_size: "35sp"
                 pos_hint: {'center_y': .5}
                 -color: app.theme_cls.primary_color_dark
+                on_release: root.next()
+            IconButton:
+                icon: "repeat"
+                pos_hint: {"center_y": .5}
+                -color: app.theme_cls.primary_color_dark
+                on_release: root.repeat()
+
 
     BoxLayout:
         id: player_preview
@@ -143,9 +166,10 @@
             spacing: "10dp"
             on_press: root.push_up()
             CoverImage:
+                id: preview_thumbnail
                 size_hint_x: None
                 width: self.height
-                source: "assets/images/phyno.jpg"
+                source: "assets/images/thumbnail.png"
                 radius: "15dp"
             CustomBoxLayout:
                 orientation: "vertical"
@@ -154,27 +178,38 @@
                 spacing: "5dp"
                 CustomBoxLayout:
                     adaptive_height: True
+                    spacing: "10dp"
                     CustomBoxLayout:
                         adaptive_height: True
                         orientation: "vertical"
                         CustomLabel:
-                            text: "Phyno - The Playmaker"
+                            id: preview_title
+                            text: "Nothing playing"
                             bold: True
                             adaptive_height: True
+                            shorten: True
+                            shorten_from: "right"
                             -color: app.theme_cls.text_color_dark
                         CustomLabel:
-                            text: "Phyno"
-                            font_size: "14sp"
+                            id: preview_artist
+                            text: "Empty"
+                            font_size: "13sp"
+                            shorten: True
+                            shorten_from: "right"
                             adaptive_height: True
                             -color: app.theme_cls.text_color_dark[:3] + [0.7]
                     IconButton:
+                        id: preview_play_btn
                         icon: "play"
                         bg_color: app.theme_cls.primary_color_dark
                         size: "35dp", "35dp"
                         pos_hint: {'center_y': .5}
+                        on_release: root.play() if self.icon == "play" else root.pause()
                 LinearProgressIndicator
+                    id: preview_progress
                     radius: "1.5dp"
-                    value: 50
+                    min: 0
+                    max: 1
                     indicator_color: app.theme_cls.primary_color_dark
 
 <PlayList>
@@ -183,7 +218,7 @@
     CoverImage:
         size_hint_x: None
         width: self.height
-        source: "assets/images/phyno.jpg"
+        source: root.thumbnail
         radius: "15dp"
     CustomBoxLayout:
         orientation: "vertical"
@@ -191,14 +226,14 @@
         pos_hint: {"center_y": .5}
         spacing: "5dp"
         CustomLabel:
-            text: "Phyno - The Playmaker"
+            text: root.title
             bold: True
             adaptive_height: True
+            shorten: True
+            shorten_from: "right"
         CustomLabel:
-            text: "Phyno"
-            font_size: "14sp"
+            text: root.artist
+            font_size: "13sp"
+            shorten: True
+            shorten_from: "right"
             adaptive_height: True
-#    IconButton:
-#        icon: "heart-outline"
-#        bg_color: app.theme_cls.primary_color_dark
-#        pos_hint: {'center_y': .5}
