@@ -38,7 +38,7 @@ version = 0.1
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
 requirements = python3, kivy, kivy_reloader, toml, trio, attrs, outcome, sniffio,
-    sortedcontainers, exceptiongroup,android,kvdroid
+    sortedcontainers, exceptiongroup,android,kvdroid,tinytag
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -94,13 +94,14 @@ fullscreen = 0
 #icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
 
 # (list) Permissions
-android.permissions = INTERNET
+android.permissions = android.permission.INTERNET, android.permission.READ_MEDIA_AUDIO,
+    android.permission.READ_EXTERNAL_STORAGE
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-android.api = 34
+android.api = 35
 
 # (int) Minimum API your APK / AAB will support.
 android.minapi = 24
@@ -188,7 +189,8 @@ android.accept_sdk_license = True
 #android.add_assets =
 
 # (list) Gradle dependencies to add
-android.gradle_dependencies = androidx.appcompat:appcompat:1.7.0,org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0
+android.gradle_dependencies = androidx.appcompat:appcompat:1.7.0,org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0,
+    androidx.media3:media3-exoplayer:1.7.1,androidx.media3:media3-common:1.7.1
 
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
 # contains an 'androidx' package, or any package from Kotlin source.
