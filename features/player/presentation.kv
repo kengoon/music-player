@@ -7,11 +7,11 @@
             size: self.size
             pos: self.pos
     StencilBoxLayout:
-        id: play_list_container
+        id: playlist_container
         radius: 0, 0, "40dp", "40dp"
         orientation: "vertical"
         size_hint_y: None
-        height: root.height - dp(100)
+        height: root.height - dp(100) - app.navbar_height
         y: root.height - self.height
         canvas:
             Color:
@@ -151,7 +151,7 @@
     BoxLayout:
         id: player_preview
         size_hint_y: None
-        height: "100dp"
+        height: dp(100) + app.navbar_height
         orientation: "vertical"
         padding: 0, 0, 0, app.navbar_height
         Divider:

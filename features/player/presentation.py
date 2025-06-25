@@ -58,8 +58,9 @@ class PlayerScreen(BaseScreen):
         :raises TypeError: If invalid types are passed to any animation parameters by
                             mistake during execution.
         """
-        anim = Animation(y=self.ids.play_list_container.height, d=.2)
-        anim.start(self.ids.play_list_container)
+        playlist_container = self.ids.playlist_container
+        anim = Animation(y=playlist_container.height + self.app.navbar_height, d=.2)
+        anim.start(playlist_container)
 
         anim = Animation(bg_color=[1, 1, 1, 1], d=.2)
         anim.bind(on_complete=lambda *_: self._add_overlay_button())
@@ -67,7 +68,7 @@ class PlayerScreen(BaseScreen):
 
         player_container = self.ids.player_container
         player_container_y = (self.height - player_container.height - ((self.height - player_container.height) / 1.5))
-        player_container_y += + self.app.navbar_height
+        player_container_y += self.app.navbar_height
         anim = Animation(y=player_container_y, opacity=1, d=.2)
         anim.start(player_container)
 
@@ -112,7 +113,7 @@ class PlayerScreen(BaseScreen):
             methods.
         :return: None
         """
-        plc = self.ids.play_list_container
+        plc = self.ids.playlist_container
         anim = Animation(y=self.height - plc.height, d=.2)
         anim.start(plc)
 

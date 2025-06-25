@@ -91,7 +91,7 @@ class MusicPlayerApp(App):
             )
             navbar_color(
                 [0, 0, 0, 0],
-                "black" if self.theme_cls.theme_style == "Light" else "white"
+                "white" if self.theme_cls.theme_style == "Light" else "black"
             )
             self.theme_cls.bind(
                 bg_color=lambda _, value: (
@@ -101,7 +101,7 @@ class MusicPlayerApp(App):
                     ),
                     navbar_color(
                         [0, 0, 0, 0],
-                        "black" if self.theme_cls.theme_style == "Light" else "white"
+                        "white" if self.theme_cls.theme_style == "Light" else "black"
                     )
                 )
             )
