@@ -58,6 +58,7 @@ class PlayerScreen(BaseScreen):
         :raises TypeError: If invalid types are passed to any animation parameters by
                             mistake during execution.
         """
+        self.update_progress.cancel()
         playlist_container = self.ids.playlist_container
         anim = Animation(y=playlist_container.height + self.app.navbar_height, d=.2)
         anim.start(playlist_container)
@@ -101,6 +102,8 @@ class PlayerScreen(BaseScreen):
         button.color = self.app.theme_cls.text_color[:3] + [0.7]
         overlay = self.ids.overlay
         overlay.add_widget(button)
+        if self.player.is_playing():
+            self.update_progress()
 
     def push_down(self):
         """
@@ -113,6 +116,7 @@ class PlayerScreen(BaseScreen):
             methods.
         :return: None
         """
+        self.update_progress.cancel()
         plc = self.ids.playlist_container
         anim = Animation(y=self.height - plc.height, d=.2)
         anim.start(plc)
@@ -148,6 +152,8 @@ class PlayerScreen(BaseScreen):
         """
         overlay = self.ids.overlay
         overlay.remove_widget(overlay.children[0])
+        if self.player.is_playing():
+            self.update_progress()
 
     def play(self, music_index=None):
         """
@@ -309,7 +315,7 @@ class PlayerScreen(BaseScreen):
             return
         self.request_audio_permission()
 
-    @triggered(1)
+    @triggered(.5)
     def update_playlist(self):
         """
         Updates the current playlist with available audio files and updates the corresponding
@@ -368,7 +374,7 @@ class PlayerScreen(BaseScreen):
         self.player.set_media_items(serialize(media_items))
         self.player.prepare()
 
-    @triggered(1/24, True)
+    @triggered(.5, True)
     def update_progress(self):
         """
         Updates the progress of the media playback and UI elements of the player. This method
