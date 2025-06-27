@@ -7,8 +7,9 @@ from kivy.metrics import sp, dp
 from kivy.properties import StringProperty
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
-
-from components.button import CustomButton
+from kvdroid.tools.audio import get_all_audio_files
+from kvdroid.tools.appsource import app_dirs
+from kvdroid.tools.exoplayer import ExoPlayer
 from features.basescreen import BaseScreen
 from libs.image import extract_thumbnail_file_from_mp3
 from libs.serialize import serialize
@@ -42,7 +43,7 @@ class PlayerScreen(BaseScreen):
                        utilized within this initializer.
         """
         super().__init__(**kwargs)
-        self.player = None
+        self.player = ExoPlayer()
         self.permission_granted = False
 
     def push_up(self):
@@ -59,51 +60,25 @@ class PlayerScreen(BaseScreen):
                             mistake during execution.
         """
         self.update_progress.cancel()
-        playlist_container = self.ids.playlist_container
-        anim = Animation(y=playlist_container.height + self.app.navbar_height, d=.2)
-        anim.start(playlist_container)
 
-        anim = Animation(bg_color=[1, 1, 1, 1], d=.2)
-        anim.bind(on_complete=lambda *_: self._add_overlay_button())
-        anim.start(self.ids.overlay)
+        Animation(opacity=0, d=.2).start(self.ids.rv)
+
+        Animation(y=0, opacity=1, d=.2).start(self.ids.overlay_btn)
+
+        playlist_container = self.ids.playlist_container
+        playlist_container_y = playlist_container.height + self.app.navbar_height
+        Animation(y=playlist_container_y, d=.2).start(playlist_container)
 
         player_container = self.ids.player_container
         player_container_y = (self.height - player_container.height - ((self.height - player_container.height) / 1.5))
         player_container_y += self.app.navbar_height
-        anim = Animation(y=player_container_y, opacity=1, d=.2)
-        anim.start(player_container)
+        Animation(y=player_container_y, opacity=1, d=.2).start(player_container)
 
         player_preview = self.ids.player_preview
         player_preview_y = -player_preview.height - self.app.navbar_height
         anim = Animation(y=player_preview_y, opacity=0, d=.2)
+        anim.bind(on_complete=lambda *_: self.update_progress())
         anim.start(player_preview)
-
-    def _add_overlay_button(self):
-        """
-        Adds an overlay button to the interface. This button is styled with a custom font
-        and includes a message prompting the user to swipe down to hide. The button also
-        registers an event to trigger the `push_down` function when pressed. It visually
-        integrates with the existing overlay by being added as a child widget to the
-        'overlay' context in the interface.
-
-        :returns: None
-        """
-        self.ids.rv.disabled = True
-        icon_path = "assets/fonts/materialdesignicons-webfont.ttf"
-        button = CustomButton(
-            size_hint_y=None,
-            height=dp(80),
-            markup=True,
-            font_size="13sp",
-            text=f"[font={icon_path}][size={int(sp(18))}]\U000F0045[/size][/font] swipe down to hide",
-            on_press=lambda *_: self.push_down(),
-        )
-        button.bg_color = [0, 0, 0, 0]
-        button.color = self.app.theme_cls.text_color[:3] + [0.7]
-        overlay = self.ids.overlay
-        overlay.add_widget(button)
-        if self.player.is_playing():
-            self.update_progress()
 
     def push_down(self):
         """
@@ -117,13 +92,16 @@ class PlayerScreen(BaseScreen):
         :return: None
         """
         self.update_progress.cancel()
+
+        Animation(opacity=1, d=.2).start(self.ids.rv)
+
+        overlay_btn = self.ids.overlay_btn
+        overlay_btn_y = -overlay_btn.height - dp(10)
+        Animation(y=overlay_btn_y, opacity=0, d=.2).start(self.ids.overlay_btn)
+
         plc = self.ids.playlist_container
         anim = Animation(y=self.height - plc.height, d=.2)
         anim.start(plc)
-
-        anim = Animation(bg_color=[0, 0, 0, 0], d=.2)
-        anim.bind(on_complete=lambda *_: self._remove_overlay_button())
-        anim.start(self.ids.overlay)
 
         player_container = self.ids.player_container
         player_container_y = -player_container.height + dp(100)
@@ -133,6 +111,7 @@ class PlayerScreen(BaseScreen):
         player_preview = self.ids.player_preview
         player_preview_y = 0
         anim = Animation(y=player_preview_y, opacity=1, d=.2)
+        anim.bind(on_complete=lambda *_: self.update_progress())
         anim.start(player_preview)
 
         self.ids.rv.disabled = False
@@ -315,7 +294,6 @@ class PlayerScreen(BaseScreen):
             return
         self.request_audio_permission()
 
-    @triggered(.5)
     def update_playlist(self):
         """
         Updates the current playlist with available audio files and updates the corresponding
@@ -331,12 +309,6 @@ class PlayerScreen(BaseScreen):
         :raises ValueError: If there are issues processing media files or creating media items.
         :return: None
         """
-        from kvdroid.tools.audio import get_all_audio_files
-        from kvdroid.tools.appsource import app_dirs
-        from kvdroid.tools.exoplayer import ExoPlayer
-
-        if not self.player:
-            self.player = ExoPlayer()
 
         media_items = []
         audio_files = get_all_audio_files()
@@ -392,7 +364,10 @@ class PlayerScreen(BaseScreen):
         :return: No return value
         """
         player = self.player
-        if player.is_command_available(player.COMMAND_GET_CURRENT_MEDIA_ITEM):
+        playback_ended = player.get_playback_state() in [self.player.STATE_ENDED, self.player.STATE_IDLE]
+        is_command_available = player.is_command_available(player.COMMAND_GET_CURRENT_MEDIA_ITEM)
+
+        if is_command_available and not playback_ended:
             self.update_player_ui(self.ids.rv.data[self.player.get_current_media_item_index()])
             current_position = player.get_current_position()
             duration = player.get_duration()
@@ -401,11 +376,12 @@ class PlayerScreen(BaseScreen):
             progress = current_position / duration
             self.ids.preview_progress.value = progress
             self.ids.container_progress.value = progress
-            if self.player.get_playback_state() in [self.player.STATE_ENDED, self.player.STATE_IDLE]:
-                self.update_progress.cancel()
-                self.set_play_button()
-                self.ids.preview_progress.value = 0
-                self.ids.container_progress.value = 0
+
+        if playback_ended:
+            self.update_progress.cancel()
+            self.set_play_button()
+            self.ids.preview_progress.value = 0
+            self.ids.container_progress.value = 0
 
     def update_player_ui(self, music_data):
         """

@@ -48,15 +48,19 @@
                     default_size: 0, "60dp"
                     spacing: "20dp"
                     padding: "20dp", 0, "20dp", "20dp"
-            RelativeLayout:
-                id: overlay
-                bg_color: 0, 0, 0, 0
-                canvas:
-                    Color:
-                        rgba: self.bg_color
-                    Rectangle:
-                        size: self.size
-                        pos: self.pos
+            CustomButton:
+                id: overlay_btn
+                size_hint_y: None
+                height: "80dp"
+                radius: 0, 0, "40dp", "40dp"
+                markup: True
+                opacity: 0
+                font_size: "13sp"
+                y: -self.height - dp(10)
+                -bg_color: "white"
+                -color: app.theme_cls.text_color[:3] + [0.7]
+                text: f"[font={icon_path}][size={int(sp(18))}]\U000F0045[/size][/font] swipe down to hide"
+                on_press: root.push_down()
     CustomBoxLayout
         id: player_container
         orientation: "vertical"
